@@ -10,32 +10,45 @@ Window {
     title: qsTr("Hello World")
 
     Rectangle {
-    width: 800
-    height: 600
+        width: 800
+        height: 600
 
-        ChartView {
+        GridView {
             anchors.fill: parent
-            antialiasing: true
-            animationOptions: ChartView.AllAnimations
-            title: "Chart"
+            cellWidth: 400
+            cellHeight: 300
+            model: 2
 
-            LineSeries {
-                name: "Line 1"
-                VXYModelMapper {
-                    model: my_model
-                    xColumn: 0
-                    yColumn: 1
-                }
-            }
+            delegate: Rectangle {
+                width: 400
+                height: 300
 
-            LineSeries {
-                name: "Line 2"
-                VXYModelMapper {
-                    model: my_model
-                    xColumn: 2
-                    yColumn: 3
+                ChartView {
+                    anchors.fill: parent
+                    antialiasing: true
+                    // animationOptions: ChartView.AllAnimations
+                    title: "Chart"
+
+                    LineSeries {
+                        name: "Line 1"
+                        VXYModelMapper {
+                            model: my_model
+                            xColumn: 0
+                            yColumn: 1
+                        }
+                    }
+
+                    LineSeries {
+                        name: "Line 2"
+                        VXYModelMapper {
+                            model: my_model
+                            xColumn: 2
+                            yColumn: 3
+                        }
+                    }
                 }
             }
         }
     }
+ 
 }

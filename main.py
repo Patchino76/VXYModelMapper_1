@@ -10,7 +10,7 @@ from PySide6.QtCore import QObject, Property, Signal, Slot, QTimer, QPointF
 
 class CustomModel( QAbstractTableModel ):
 
-    dataChanged = Signal(list)
+    dataChanged = Signal(QModelIndex, QModelIndex)
 
     def __init__( self, parent=None ):
         super().__init__( parent )
@@ -35,6 +35,11 @@ class CustomModel( QAbstractTableModel ):
             [ 700, 24, 704, 7 ]
         ]
 
+        self.timer = QTimer(self)
+        self.timer.setInterval(100)  # 1 second
+        self.timer.timeout.connect(self.update_data)
+        self.timer.start()
+
     def rowCount( self, parent ):
         return len( self.data_list )
 
@@ -50,12 +55,22 @@ class CustomModel( QAbstractTableModel ):
             return QColor( Qt.white )
         
 
+    # def update_data(self):
+    #     for i in range(len(self.data)):
+    #         for j in range(self.columnCount(QModelIndex())):
+    #             self.data[i][j] += 1
+    #     self.dataChanged.emit(self.createIndex(0, 0), self.createIndex(self.rowCount(QModelIndex()) - 1,
+    #                                                                     self.columnCount(QModelIndex()) - 1))
     def update_data(self):
-        for i in range(len(self.data)):
-            for j in range(self.columnCount(QModelIndex())):
-                self.data[i][j] += 1
-        self.dataChanged.emit(self.createIndex(0, 0), self.createIndex(self.rowCount(QModelIndex()) - 1,
-                                                                        self.columnCount(QModelIndex()) - 1))
+        for row in range(self.rowCount(self)):
+            for col in range(self.columnCount(self)):
+                if col == 1:
+                    self.data_list[row][col] += 1
+                elif col == 3:
+                    self.data_list[row][col] -= 1
+        top_left = self.index(0, 0)
+        bottom_right = self.index(self.rowCount(self)-1, self.columnCount(self)-1)
+        self.dataChanged.emit(top_left, bottom_right)
 
 
 if __name__ == '__main__':
